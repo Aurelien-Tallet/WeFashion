@@ -13,18 +13,22 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'image',
+        'picture_id',
         'category_id',
-        'size_id',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
-    
+
     public function size()
     {
         return $this->belongsTo(Size::class);
+    }
+
+    public function picture()
+    {
+        return $this->belongsTo(Picture::class);
     }
 }

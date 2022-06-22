@@ -14,11 +14,24 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-        $table->unsignedBigInteger('picture_id');
-        $table->foreign('picture_id')->references('id')->on('pictures');
+            // Create field and relation to pictures table
 
-        $table->unsignedBigInteger('category_id');
-        $table->foreign('category_id')->references('id')->on('categories');
+
+            $table
+                ->foreignId('picture_id')
+                ->nullable()
+                ->references('id')
+                ->on('pictures')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
+
+            $table
+                ->foreignId('category_id')
+                ->nullable()
+                ->references('id')
+                ->on('categories')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
         });
     }
 
@@ -31,5 +44,9 @@ return new class extends Migration
     public function down()
     {
         //
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropForeign(['picture_id']);
+            $table->dropForeign(['category_id']);
+        });
     }
 };

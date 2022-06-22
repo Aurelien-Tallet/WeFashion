@@ -21,8 +21,6 @@ return new class extends Migration
             $table->enum('status', ['publish', 'unpublish'])->default('unpublish');
             $table->string('reference', 16);
             $table->enum('discount', ['discount', 'standard'])->default('standard');
-
-
             $table->timestamps();
         });
     }

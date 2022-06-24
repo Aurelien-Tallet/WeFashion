@@ -17,4 +17,10 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public static function getCategoryByName($name)
+    {
+        return Category::where('name', $name)->firstOrFail();
+    }
 }
+

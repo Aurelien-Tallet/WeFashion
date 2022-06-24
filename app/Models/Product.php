@@ -12,9 +12,12 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'reference',
+        'discount',
         'price',
-        'picture_id',
         'category_id',
+        'status',
+        'picture_id',
     ];
 
     public function category()
@@ -22,13 +25,18 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function size()
+    public function sizes()
     {
-        return $this->belongsTo(Size::class);
+        return $this->belongsToMany(Size::class)->withPivot('product_id', 'size_id');
     }
 
     public function picture()
     {
         return $this->belongsTo(Picture::class);
+    }
+
+    public static function getProductsWithDiscount()
+    {
+        return Product::where('discount', 'standard');
     }
 }

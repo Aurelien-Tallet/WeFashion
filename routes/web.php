@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CatalogController::class , 'index'])->name('products');
 Route::get('/discount', [CatalogController::class , 'discount'])->name('products.discount');
 Route::get('/category/{name}', [CatalogController::class , 'category'])->name('products.category');
-Route::get('/products/{id}', [CatalogController::class , 'show'])->whereNumber('id');
+Route::get('/products/{id}', [CatalogController::class , 'show'])->whereNumber('id')->name('products.show');
 
 
 //ADMIN CRUD
@@ -35,6 +36,7 @@ Route::get('/products/{id}', [CatalogController::class , 'show'])->whereNumber('
 Route::get('/admin', [ProductController::class, 'index'])->middleware(['auth'])->name('admin');
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function(){
     Route::resource('products', ProductController::class )->except(['show']);
+    Route::resource('category', CategoryController::class );
 });
 
 // Route::get('/dashboard',[ProductController::class, 'index'])->middleware(['auth'])->name('dashboard');

@@ -9,10 +9,50 @@ use App\Models\Size;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Nette\NotImplementedException;
 
 class ProductController extends Controller
 {
 
+    private const PATH = 'public/image';
+    private function storePicture($request)
+    {
+        $filenameWithExt = $request->file('image')->getClientOriginalName();
+        // Get Filename
+        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+
+        // Get just Extension
+        $extension = $request->file('image')->getClientOriginalExtension();
+        // Filename To store
+        $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+        $request->file('image')->storeAs(self::PATH, $fileNameToStore);
+        $picture = Picture::create([
+            'name' => $fileNameToStore
+        ]);
+        $picture->save();
+        return $picture;
+    }
+    private function updatePicture($request, $product)
+    {
+        // TODO
+        $filenameWithExt = $request->file('image')->getClientOriginalName();
+        // Get Filename
+        $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+
+        // Get just Extension
+        $extension = $request->file('image')->getClientOriginalExtension();
+        // Filename To store
+        $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+        $request->file('image')->storeAs(self::PATH, $fileNameToStore);
+
+        // Ignore if no image is uploaded
+
+
+        Storage::delete('public/image/' . $product->picture->name);
+        $product->picture()->update([
+            'name' => $fileNameToStore
+        ]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -50,53 +90,27 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // Validate the request..
-        // dd($request->all());
-        // $request->validate([
-        //     'name' => 'required',
-        //     'reference' => 'required',
-        //     'description' => 'required',
-        //     'price' => 'required',
-        //     'image' => 'required',
-        // ]);
-
-        // dd($request->all());
-        $product = Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'discount' => $request->discount,
-            'category_id' => $request->category,
-            'price' => $request->price,
-            'status' => $request->status,
+        $request->validate([
+            'name' => 'required',
+            'reference' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'image' => 'required',
         ]);
-        foreach ($request->sizes as $size) {
-            $product->sizes()->attach($size);
-        }
 
-        if ($request->file('image')) {
-            $filenameWithExt = $request->file('image')->getClientOriginalName();
-            // Get Filename
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+        // Create a new product
+        $product = Product::create($request->all());
+        // Attach size to product
+        $product->sizes()->sync($request->sizes);
+
+        // Store picture and associate it to product
+        $picture = $this->storePicture($request);
+        $product->picture()->associate($picture);
 
 
-            // Get just Extension
-            $extension = $request->file('image')->getClientOriginalExtension();
-            // Filename To store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            $path = $request->file('image')->storeAs('public/image', $fileNameToStore);
-            $picture = Picture::create([
-                'name' => asset('storage/image/' . $fileNameToStore),
-            ]);
-            $picture->save();
-            $product->picture()->associate($picture);
-            $product->save();
-        }
-        // Else add a dummy image
-        else {
-            $fileNameToStore = 'oimage.jpg';
-        }
+        $product->save();
 
-        // dd($request->file("image"));
+        return redirect()->route('admin.products.create');
     }
 
     /**
@@ -108,7 +122,6 @@ class ProductController extends Controller
     public function show($id)
     {
         //
-
     }
 
     /**
@@ -119,7 +132,6 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
         return view('admin.products.create', ([
             'categories' => Category::all(),
             'sizes' => Size::all(),
@@ -140,42 +152,16 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         $product = Product::findOrFail($id);
-        $product->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'discount' => $request->discount,
-            'category_id' => $request->category,
-            'price' => $request->price,
-            'status' => $request->status,
-        ]);
+        $product->update($request->all());
         // Update the sizes of the product
         $product->sizes()->sync($request->sizes);
 
         if ($request->file('image') && $product->picture != $request->file('image')) {
-            $filenameWithExt = $request->file('image')->getClientOriginalName();
-            // Get Filename
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            
-            // Get just Extension
-            $extension = $request->file('image')->getClientOriginalExtension();
-            // Filename To store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            $path = $request->file('image')->storeAs('public/image', $fileNameToStore);
-            
-            // Ignore if no image is uploaded
-            if (str_contains($product->picture->name, 'image/')) {
-                $deletedFile = '/public/image/' . explode('image/', $product->picture->name)[1];
-                Storage::delete($deletedFile);
-            }
-            
-            $product->picture()->update([
-                'name' => asset('storage/image/' . $fileNameToStore)
-            ]);
+            $this->updatePicture($request, $product);
         }
         $product->save();
+        return redirect()->route('admin.products.index');
     }
 
     /**

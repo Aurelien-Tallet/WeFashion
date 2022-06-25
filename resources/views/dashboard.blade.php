@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Liste des vêtements') }}
         </h2>
     </x-slot>
 
@@ -12,8 +12,8 @@
                     <ul>
                         @foreach ( $products as $product)
                         <div class="block flex flex-row items-center" style="gap:15px;">
-                            <x-label for="{{$product->id}}" :value="__('nom : ')" class="mx-10" />
-                            <a id="{{$product->id}}" href="{{route('admin.products.edit', $product->id)}}">{{$product->name}}</a>  
+                            <x-label :value="__('nom : ')" class="mx-10" />
+                            <a id={{$product->id}} href="{{route('admin.products.edit', $product->id)}}">{{$product->name}}</a>  
                         </div>
                         <div class="block flex flex-row items-center" style="gap:15px;">
                             <x-label :value="__('reference : ')" class="mx-10" />

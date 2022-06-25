@@ -31,7 +31,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('categories')
                 ->onUpdate('CASCADE')
-                ->onDelete('CASCADE');
+                ->onDelete('set null');
         });
     }
 

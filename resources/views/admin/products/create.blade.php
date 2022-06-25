@@ -4,7 +4,6 @@
             {{ __($submit . ' un article') }}
         </h2>
     </x-slot>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -31,10 +30,10 @@
                                 autofocus />
                         </div>
                         <div>
-                            <x-label for="price" :value="__('prix')" />
+                            <x-label for="price" :value="__('prix en €')" />
                             <input type="number" class="form-control" id="price" name="price" step="0.01"
                                 min="0.01" max="9999.99"
-                                value="{{ isset($product) ? old($product->price) : '' }} . '€'" placeholder="prix"
+                                value="{{ isset($product) ? $product->price : '' }}" placeholder="prix"
                                 required>
                         </div>
                         <div class="flex" style="gap:30px;">
@@ -64,6 +63,7 @@
                             <div>
                                 <x-label for="category" :value="__('Categorie')" />
                                 <select id="category" name="category" class="form-control block">
+                                    <option value="">Choisir une catégorie</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ isset($product) && $product->category_id == $category->id ? 'selected' : '' }}>
@@ -89,8 +89,13 @@
                         <div>
                             <x-label for="picture" :value="__('Image')" />
                             <input type="file" name="image" id="picture" accept="jpeg,png,jpg', image.jpeg"
-                                {{isSet($product) ?  : 'required'}}/>
+                                {{ isset($product) ?: 'required' }} value="IMAGE" /> {{isSet($product) ? $product->picture->name : ''}}
                         </div>
+                        @if (isset($product))
+                            <div>
+                                <img src="{{ asset('/storage/image/' . $product->picture->name) }}" />
+                            </div>
+                        @endif
                         <div style="margin-top:20px;">
 
                             <x-button class="m-3 block">

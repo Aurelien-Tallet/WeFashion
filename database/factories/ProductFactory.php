@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2, 0, 100),
             'status' => $this->faker->randomElement(['publish', 'unpublish']),
-            'reference' => $this->faker->text(16, 16),
+            'reference' => $this->faker->regexify('[A-Za-z0-9]{16}'),
             'discount' => $this->faker->randomElement(['discount', 'standard']),
         ];
     }

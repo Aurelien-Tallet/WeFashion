@@ -91,11 +91,12 @@ class ProductController extends Controller
     {
         // Validate the request..
         $request->validate([
-            'name' => 'required',
-            'reference' => 'required',
+            'name' => 'required|string|min:5|max:100',
+            'reference' => 'required|string|min:16|max:16',
             'description' => 'required',
-            'price' => 'required',
+            'price' => 'required|numeric',
             'image' => 'required',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
         // Create a new product
@@ -110,7 +111,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('admin.products.create');
+        return redirect()->route('admin.products.index');
     }
 
     /**
@@ -152,6 +153,14 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        // Validate the request..
+        $request->validate([
+            'name' => 'string|min:5|max:100',
+            'reference' => 'string|min:16|max:16',
+            'price' => 'numeric',
+            'category_id' => 'exists:categories,id',
+        ]);
         $product = Product::findOrFail($id);
         $product->update($request->all());
         // Update the sizes of the product
@@ -170,8 +179,12 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
         //
+        $product->picture->delete();
+        Storage::delete('public/image/' . $product->picture->name);
+        $product->delete();
+        return redirect()->route('admin.products.index');
     }
 }

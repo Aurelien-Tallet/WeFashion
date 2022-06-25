@@ -41,7 +41,7 @@ class CatalogController extends Controller
         return self::renderProducts($products, 'Soldes');
     }
 
-    private static function renderProducts($products = null, $title = 'Tout les vêtements')
+    private static function renderProducts($products = null, $title = 'Nos Vêtements')
     {
         $productsList = ($products == null) ? Product::where('status', 'publish')->orderBy('id', 'desc')->where('category_id', '!=', null)->paginate(self::PAGINATION) : $products->where('status', 'publish')->orderBy('id', 'desc')->where('category_id', '!=', null)->paginate(self::PAGINATION);
 

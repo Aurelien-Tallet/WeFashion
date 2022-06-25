@@ -62,7 +62,7 @@
                             </div>
                             <div>
                                 <x-label for="category" :value="__('Categorie')" />
-                                <select id="category" name="category" class="form-control block">
+                                <select id="category" name="category_id" class="form-control block">
                                     <option value="">Choisir une catégorie</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"

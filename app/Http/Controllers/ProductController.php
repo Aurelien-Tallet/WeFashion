@@ -96,7 +96,7 @@ class ProductController extends Controller
             'description' => 'required',
             'price' => 'required|numeric',
             'image' => 'required',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required',
         ]);
 
         // Create a new product
@@ -156,10 +156,11 @@ class ProductController extends Controller
 
         // Validate the request..
         $request->validate([
-            'name' => 'string|min:5|max:100',
-            'reference' => 'string|min:16|max:16',
+            'name' => 'required|string|min:5|max:100',
+            'reference' => 'required|string|min:16|max:16',
+            'description' => 'required',
             'price' => 'numeric',
-            'category_id' => 'exists:categories,id',
+            'category_id' => 'required',
         ]);
         $product = Product::findOrFail($id);
         $product->update($request->all());

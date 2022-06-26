@@ -8,32 +8,42 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="flex" style="gap:50px;">
-                        <div class="block flex flex-row items-center  pl-30" style="width:70px;">
-                            <x-label :value="__('image  ')" class="mx-10" />
+                <div class="p-6 bg-white border-b border-gray-180">
+                    <div class="flex pl-10 " style="gap:10px">
+                        <div class="block flex flex-row items-center  " style="width:70px;">
+                            <x-label :value="__('image  ')"  />
                         </div>
-                        <div class="block flex flex-row items-center  pl-30" style="width:200px;">
-                            <x-label :value="__('nom  ')" class="mx-10" />
+                        <div class="block flex flex-row items-center  pl-30" style="width:180px;">
+                            <x-label :value="__('nom  ')" />
+                        </div>
+                        <div class="block flex flex-row items-center" style="width:180px;">
+                            <x-label :value="__('reference ')"  />
+                        </div>
+                        <div class="block flex flex-row items-center" style="width:180px;">
+                            <x-label :value="__('status ')" />
                         </div>
                         <div class="block flex flex-row items-center">
-                            <x-label :value="__('reference ')" class="mx-10" />
+                            <x-label :value="__('categorie ')"  />
                         </div>
                     </div>
                     @foreach ($products as $product)
-                        <div class="flex pl-10 " style="gap:50px;">
+                        <div class="flex pl-10 " style="gap:10px" >
                             <div class="block flex flex-row items-center pl-30" style="width:70px;">
                                 <img src={{ asset('/storage/image/' . $product->picture->name) }}
                                     style="width:70px; height:70px; object-fit:cover;" />
                             </div>
-                            <div class="block flex pl-30 flex-row items-center " style="width:200px;">
-                                {{-- <x-label :value="__('nom : ')" class="mx-10" /> --}}
+                            <div class="block flex pl-30 flex-row items-center " style="width:180px;">
                                 <a id={{ $product->id }}
                                     href="{{ route('admin.products.edit', $product->id) }}">{{ $product->name }}</a>
                             </div>
-                            <div class="block flex flex-row items-center" style="width:200px;">
-                                {{-- <x-label :value="__('reference : ')" class="mx-10" /> --}}
+                            <div class="block flex flex-row items-center" style="width:180px;">
                                 <p>{{ $product->reference }}</p>
+                            </div>
+                            <div class="block flex flex-row items-center" style="width:180px;">
+                                <p>{{ $product->status }}</p>
+                            </div>
+                            <div class="block flex flex-row items-center" style="width:180px;">
+                                <p class="w-full">{{ $product->category->name }}</p>
                             </div>
                             <div class="block flex flex-row items-center">
                                 <a id={{ $product->id }} href="{{ route('admin.products.edit', $product->id) }}"

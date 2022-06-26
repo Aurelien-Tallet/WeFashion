@@ -4,8 +4,8 @@
         <h1 class="display-3 pt-3 text-center text-uppercase">
             {{ $product->name }}</h1>
     </div>
-    <div class="flex justify-content-center">
-        <div class="col-md-3 ">
+    <div class="flex flex-col flex-lg-row justify-content-center">
+        <div class="col-md-4 ">
             <div class=" my-3 bg-transparent">
                 <div class="card-body">
                     <div class="picture-wrapper">

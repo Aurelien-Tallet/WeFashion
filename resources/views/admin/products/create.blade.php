@@ -62,7 +62,7 @@
                             </div>
                             <div>
                                 <x-label for="category" :value="__('Categorie')" />
-                                <select id="category" name="category_id" class="form-control block">
+                                <select id="category" name="category_id" class="form-control block" required>
                                     <option value="">Choisir une catégorie</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
@@ -92,8 +92,8 @@
                                 {{ isset($product) ?: 'required' }} value="IMAGE" /> {{isSet($product) ? $product->picture->name : ''}}
                         </div>
                         @if (isset($product))
-                            <div>
-                                <img src="{{ asset('/storage/image/' . $product->picture->name) }}" />
+                            <div style="width:300px; height:300px; overflow:hidden; ">
+                                <img style="width:100%; height:100%; object-fit:cover;" src="{{ asset('/storage/image/' . $product->picture->name) }}" />
                             </div>
                         @endif
                         <div style="margin-top:20px;">
